@@ -10,7 +10,8 @@
 /// 2013, 2023
 
 // Student authors (fill in below):
-// NMec:  Name:
+// NMec: 103521  Name: Diogo Soares
+// NMec: 103935  Name: José Pedro Tavares Lopes
 // 
 // 
 // 
@@ -172,6 +173,37 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   assert (height >= 0);
   assert (0 < maxval && maxval <= PixMax);
   // Insert your code here!
+
+
+  Image createdImage = malloc(sizeof(struct image));  //alocação de espaço para a nova imagem
+
+  if (createdImage == NULL){  //se a imagem criada é NULL
+
+    errCause = "Não foi possível alocar memória para nova imagem"; //mensagem de erro
+    errno = 12; //número 12 para errno significa falha de alocação de memória
+    return NULL;//Se falhar para criar espaço para a nova imagem dá return a nulo pois houve um erro
+  }
+
+  //Fornecer à nova imagem os valores usados na chamada da imagem
+  createdImage->width = width;
+  createdImage->height = height;
+  createdImage->maxval = maxval;
+  
+  //Aqui alocamos memória inicializada como 0 para os pixeis, os pixeis totais serão a altura(height) multiplicado pela largura(width)
+  //Usando o calloc em vez de malloc a memória alocada em vez de não ser inicializada será inicializada com o valor 0, ou seja pixeis pretos
+  createdImage->pixel = calloc(width * height, sizeof(uint8));
+
+  if (createdImage->pixel == NULL)  //Se houver erros na alocação de memória para os pixeis
+  {
+    free(createdImage); //Remove a memória usada para guardar a imagem
+    errCause = "Não foi possível alocar memória para os pixeis da nova imagem";//mensagem de erro
+    errno = 12; //número 12 para errno significa falha de alocação de memória
+    return NULL; //retorna NULL pois deu erro na criação da imagem
+  }
+
+  return createdImage; //retorna a imagem se tudo correu certo
+
+
 }
 
 /// Destroy the image pointed to by (*imgp).
@@ -182,6 +214,12 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
 void ImageDestroy(Image* imgp) { ///
   assert (imgp != NULL);
   // Insert your code here!
+
+
+
+
+
+
 }
 
 
@@ -294,6 +332,13 @@ int ImageMaxval(Image img) { ///
 void ImageStats(Image img, uint8* min, uint8* max) { ///
   assert (img != NULL);
   // Insert your code here!
+
+
+
+
+
+
+
 }
 
 /// Check if pixel position (x,y) is inside img.
@@ -306,6 +351,13 @@ int ImageValidPos(Image img, int x, int y) { ///
 int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   // Insert your code here!
+
+
+  
+
+
+
+
 }
 
 /// Pixel get & set operations
@@ -321,6 +373,14 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
 static inline int G(Image img, int x, int y) {
   int index;
   // Insert your code here!
+
+
+
+
+
+
+
+
   assert (0 <= index && index < img->width*img->height);
   return index;
 }
@@ -356,6 +416,14 @@ void ImageSetPixel(Image img, int x, int y, uint8 level) { ///
 void ImageNegative(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
+
+
+
+
+
+
+
+
 }
 
 /// Apply threshold to image.
@@ -364,6 +432,13 @@ void ImageNegative(Image img) { ///
 void ImageThreshold(Image img, uint8 thr) { ///
   assert (img != NULL);
   // Insert your code here!
+
+
+
+
+
+
+
 }
 
 /// Brighten image by a factor.
@@ -374,6 +449,13 @@ void ImageBrighten(Image img, double factor) { ///
   assert (img != NULL);
   // ? assert (factor >= 0.0);
   // Insert your code here!
+
+
+
+
+
+
+
 }
 
 
@@ -401,6 +483,11 @@ void ImageBrighten(Image img, double factor) { ///
 Image ImageRotate(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
+
+
+
+
+
 }
 
 /// Mirror an image = flip left-right.
@@ -413,6 +500,12 @@ Image ImageRotate(Image img) { ///
 Image ImageMirror(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
+
+
+
+
+
+
 }
 
 /// Crop a rectangular subimage from img.
@@ -431,6 +524,13 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   assert (ImageValidRect(img, x, y, w, h));
   // Insert your code here!
+
+
+
+
+
+
+
 }
 
 
@@ -445,6 +545,15 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
+
+
+
+
+
+
+
+
+
 }
 
 /// Blend an image into a larger image.
@@ -458,6 +567,15 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
+
+
+
+
+
+
+
+
+
 }
 
 /// Compare an image to a subimage of a larger image.
@@ -468,6 +586,15 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   assert (img2 != NULL);
   assert (ImageValidPos(img1, x, y));
   // Insert your code here!
+
+
+
+
+
+
+
+
+
 }
 
 /// Locate a subimage inside another image.
@@ -478,6 +605,14 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
   // Insert your code here!
+
+
+
+
+
+
+
+
 }
 
 
@@ -489,5 +624,13 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 /// The image is changed in-place.
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
+
+
+
+
+
+
+
+
 }
 
