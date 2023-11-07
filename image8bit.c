@@ -215,9 +215,13 @@ void ImageDestroy(Image* imgp) { ///
   assert (imgp != NULL);
   // Insert your code here!
 
+  Image DestroyImage = imgp;  //passar o valor do ponteiro imgp para a nova Image DestroyImage
+  free(DestroyImage->pixel);  //libertar o espaço do array pixel da imagem
+  free(DestroyImage);         //libertar o espaço ocupado pelo resto da imagem (width, height e maxval)
+  imgp = NULL;                //fazer com que o ponteiro imgp já não aponte para nada para que já não possa ser acessivel o antigo local de memória
 
 
-
+  //Perguntar ao professor se isto está bem feito
 
 
 }
