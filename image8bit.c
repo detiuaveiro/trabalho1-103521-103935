@@ -222,6 +222,7 @@ void ImageDestroy(Image* imgp) { ///
 
 
   //Perguntar ao professor se isto está bem feito
+  // ola tou no github
 
 
 }
