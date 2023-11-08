@@ -215,15 +215,20 @@ void ImageDestroy(Image* imgp) { ///
   assert (imgp != NULL);
   // Insert your code here!
 
-  Image DestroyImage = imgp;  //passar o valor do ponteiro imgp para a nova Image DestroyImage
-  free(DestroyImage->pixel);  //libertar o espaço do array pixel da imagem
-  free(DestroyImage);         //libertar o espaço ocupado pelo resto da imagem (width, height e maxval)
-  imgp = NULL;                //fazer com que o ponteiro imgp já não aponte para nada para que já não possa ser acessivel o antigo local de memória
+  //Image DestroyImage = *imgp;  //passar o valor do ponteiro imgp para a nova Image DestroyImage
+  //free(DestroyImage->pixel);  //libertar o espaço do array pixel da imagem
+  //free(DestroyImage);         //libertar o espaço ocupado pelo resto da imagem (width, height e maxval)
+  //*imgp = NULL;                //fazer com que o ponteiro imgp já não aponte para nada para que já não possa ser acessivel o antigo local de memória
+  //passei a comentário pois utilizar uma nova variável está a ficar confuso
+
+  free ((*imgp)->pixel);  //libertar memória alocada para o array pixel de imgp
+  (*imgp)->pixel = NULL;  //fazer com que o ponteiro para pixel se torne NULL por razões de segurança
+  free(*imgp);            //libertar memória associada com imgp
+  *imgp = NULL;           //faz com que o ponteiro para imgp se torne NULL por razões de segurança
+
 
 
   //Perguntar ao professor se isto está bem feito
-  // ola tou no github
-
 
 }
 
