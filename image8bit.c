@@ -215,20 +215,10 @@ void ImageDestroy(Image* imgp) { ///
   assert (imgp != NULL);
   // Insert your code here!
 
-  //Image DestroyImage = *imgp;  //passar o valor do ponteiro imgp para a nova Image DestroyImage
-  //free(DestroyImage->pixel);  //libertar o espaço do array pixel da imagem
-  //free(DestroyImage);         //libertar o espaço ocupado pelo resto da imagem (width, height e maxval)
-  //*imgp = NULL;                //fazer com que o ponteiro imgp já não aponte para nada para que já não possa ser acessivel o antigo local de memória
-  //passei a comentário pois utilizar uma nova variável está a ficar confuso
 
   free ((*imgp)->pixel);  //libertar memória alocada para o array pixel de imgp
-  (*imgp)->pixel = NULL;  //fazer com que o ponteiro para pixel se torne NULL por razões de segurança
   free(*imgp);            //libertar memória associada com imgp
   *imgp = NULL;           //faz com que o ponteiro para imgp se torne NULL por razões de segurança
-
-
-
-  //Perguntar ao professor se isto está bem feito
 
 }
 
@@ -343,11 +333,23 @@ void ImageStats(Image img, uint8* min, uint8* max) { ///
   assert (img != NULL);
   // Insert your code here!
 
+  uint8* maxpixel, minpixel;  //criar variávei para guardar o pixel com valor máximo e minimo da imagem
+  maxpixel = img->pixel[0];   //iniciar valores
+  minpixel = img->pixel[0];
 
+  for (int i = 1; i < sizeof(img->pixel); i++){   //percorrer o array de pixeis
+    if  (maxpixel < img->pixel[i])  //comparar o antigo pixel com valor maior com o novo pixel
+      maxpixel = img->pixel[i];     //se isto acontecer fornecer novo valor ao maxpixel
+    
+    if (minpixel > img->pixel[i])   //comparar o antigo pixel com o valor minimo com o novo pixel
+      minpixel = img->pixel[i];     //se isto acontecer fornecer novo valor ao minpixel
+  }
 
+  min = minpixel; //fornecer valor do pixel minimo à variável necessária
+  max = maxpixel; //fornecer valor do pixel máximo à variável necessária
 
-
-
+  free(minpixel); //libertar memória alocada
+  free(maxpixel); //ditto
 
 }
 
