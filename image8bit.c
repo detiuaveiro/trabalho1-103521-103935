@@ -364,7 +364,54 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   // Insert your code here!
 
+  int rectwidthpos = x + w;   //descobrir em que espaço da reta x o novo retangulo se encontra
+  int rectheightpos = y + h;  //descobrir em que espaço da reta y o novo retangulo se encontra
 
+  if (rectheightpos <= img->height && rectwidthpos <= img->width) //comparação do valor da height e width do novo retângulo com os respetivos valores na imagem original
+                                                                  //caso estes valores sejam maiores então o novo retângulo sai das dimensões da imagem original
+  {
+    return 1;
+  }
+
+  //código para possíveis erros para dimensões dos retângulos
+  //errno = 22 significa que os valores dos argumentos fornecidos são inválidos
+
+  else if(x > img->width && y > img->width){ //erro nos valores x e y que se encontram fora das coordenadas da imagem
+    errCause = "Os valores de x e y fornecidos encontram-se fora dos limites da imagem";
+    errno = 22;
+    return NULL;
+  }
+
+  else if(x > img->width){  //erro no valor x que se encontra fora das coordenadas da imagem
+    errCause = "O valor de x fornecido encontra-se fora dos limites da imagem";
+    errno = 22;
+    return NULL;
+  }
+
+  else if(y > img->height){ //erro no valor y que se encontra fora das coordenadas da imagem
+    errCause = "O valor de y fornecido encontra-se fora dos limites da imagem";
+    errno = 22;
+    return NULL;
+  }
+
+  else if(rectheightpos > img->height && rectwidthpos > img->width){ //erro em que o retângulo sai do limite em ambas altura e largura
+    errCause = "Altura e largura do novo retângulo são incompatíveis com a imagem, pois este retângulo encontra-se for dos limites da imagem";
+    errno = 22;
+    return NULL;
+  }
+
+
+  else if (rectheightpos > img->height){  //erro em que o retângulo sai do limite da altura
+    errCause = "Altura do novo retângulo é incompatível com a imagem, sendo que a sua altura encontra-se fora dos limites da imagem";
+    errno = 22;
+    return NULL;
+  }
+
+  else if (rectwidthpos > img->width){  //erro em que o retângulo sai do lime da largura
+    errCause = "Largura do novo retângulo é incompatível com a imagem, sendo que a sua largura encontra-se fora dos limites da imagem";
+    errno = 22;
+    return NULL;
+  }
   
 
 
@@ -462,11 +509,16 @@ void ImageBrighten(Image img, double factor) { ///
   // ? assert (factor >= 0.0);
   // Insert your code here!
 
+  assert (factor >= 0.0);
 
+  for (int i = 0; i < sizeof(img->pixel); i++){ //percorrer array de pixeis
 
+    if (img->pixel[i] * factor > img->maxval) // novo valor é maior que maxval
+      img->pixel[i] = img->maxval;            // então o novo valor fica maxval
 
-
-
+    else 
+      img->pixel[i] = (int) (img->pixel[i] * factor + 0.5); //caso contrário o pixel terá apenas o seu valor multiplicado normalmente
+  }
 
 }
 
