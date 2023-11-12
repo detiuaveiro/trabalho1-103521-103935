@@ -433,6 +433,8 @@ static inline int G(Image img, int x, int y) {
   int index;
   // Insert your code here!
 
+  int imgwidth = img->width;        //tamanho de uma linha
+  index = imgwidth * (y - 1) + x;   //index é o valor do tamanho da linha * número de linhas y, pois y começa em 0, mais os restantes valores da última linha, que será x
 
 
 
