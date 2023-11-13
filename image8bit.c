@@ -585,6 +585,27 @@ Image ImageMirror(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
 
+  Image newImg = img;
+  uint8 newPixel;
+
+  for(int x = 0; x < sizeof(img->width); x++)
+    for (int y = 0; y < sizeof(img->height); y++)
+    {
+      newPixel = ImageGetPixel(img, x, y);
+      ImageSetPixel(newImg, img->width - x, y, newPixel);
+    }
+
+  return newImg;
+
+
+  //a faltar impletação de apanhar erros
+
+
+
+
+
+
+
 
 
 
