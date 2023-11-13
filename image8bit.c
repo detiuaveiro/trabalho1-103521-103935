@@ -479,7 +479,7 @@ void ImageNegative(Image img) { ///
   // Insert your code here!
 
   for (int i = 0; i<sizeof(img->pixel); i++)  //percorrer array de pixeis
-    img->pixel[i] = 255 - img->pixel[i];      //remover o valor do pixel i a 255 de forma a inverter, exs.: 255 -> 255 - 255 = 0; 0 -> 255 - 0 = 255; 200 -> 255 - 200 = 55
+    img->pixel[i] = img->maxval - img->pixel[i];      //remover o valor do pixel i a maxval(valor máximo do pixel) de forma a inverter, exs.: 255 -> 255 - 255 = 0; 0 -> 255 - 0 = 255; 200 -> 255 - 200 = 55; isto no caso de 255 ser o maxval
  
 
 
@@ -495,7 +495,13 @@ void ImageThreshold(Image img, uint8 thr) { ///
   assert (img != NULL);
   // Insert your code here!
 
+  for (int i = 0; i<sizeof(img->pixel); i++){ //percorrer array de pixeis
+    if (img->pixel[i] < thr)
+      img->pixel[i] = 0;
+    else
+      img->pixel[i] = img->maxval;
 
+  }  
 
 
 
