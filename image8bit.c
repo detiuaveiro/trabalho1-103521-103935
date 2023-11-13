@@ -558,6 +558,8 @@ Image ImageRotate(Image img) { ///
   // Insert your code here!
 
 
+  //falta malloc de newImg
+
   Image newImg = img;
   uint8 newPixel;
 
@@ -568,6 +570,15 @@ Image ImageRotate(Image img) { ///
       ImageSetPixel(newImg, )
     }
     
+
+
+
+
+
+
+
+
+
 
 
 
@@ -585,6 +596,10 @@ Image ImageMirror(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
 
+
+
+  //falta malloc de newImg
+
   Image newImg = img;
   uint8 newPixel;
 
@@ -599,6 +614,11 @@ Image ImageMirror(Image img) { ///
 
 
   //a faltar impletação de apanhar erros
+
+
+
+
+
 
 
 
