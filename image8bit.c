@@ -10,7 +10,7 @@
 /// 2013, 2023
 
 // Student authors (fill in below):
-// NMec: 103521  Name: Diogo Soares
+// NMec: 103521  Name: Diogo Tavares de Vasconcelos Aguiar Soares
 // NMec: 103935  Name: José Pedro Tavares Lopes
 // 
 // 
