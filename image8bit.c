@@ -559,6 +559,8 @@ Image ImageRotate(Image img) { ///
 
 
   //falta malloc de newImg
+  
+  Image newImg = malloc(sizeof(struct(image));
 
   Image newImg = img;
   uint8 newPixel;
