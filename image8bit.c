@@ -560,7 +560,7 @@ Image ImageRotate(Image img) { ///
 
   //falta malloc de newImg
   
-  Image newImg = malloc(sizeof(struct(image));
+  Image newImg = malloc(sizeof(struct(image)); //alocaçao de espaço?
 
   Image newImg = img;
   uint8 newPixel;
