@@ -559,8 +559,8 @@ Image ImageRotate(Image img) { ///
 
 
   //falta malloc de newImg
-  
   Image newImg = malloc(sizeof(struct(image)); //alocaçao de espaço?
+	// nao deve estar bem
 
   Image newImg = img;
   uint8 newPixel;
@@ -601,7 +601,9 @@ Image ImageMirror(Image img) { ///
 
 
   //falta malloc de newImg
-
+	Image newImg = malloc(sizeof(struct(image)); //alocaçao de espaço?
+  // ta igual ao de cima logo tambem nao deve tar bem
+  
   Image newImg = img;
   uint8 newPixel;
 
