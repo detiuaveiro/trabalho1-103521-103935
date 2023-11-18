@@ -681,18 +681,19 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
 
+  //inicialização de varíaveis para ajudar a percorrer a img2
   int y1 = 0;
   int x1 = 0;
 
-  for(int i = y; i < y + img2->height;i++){
-    for (int j = x; j < x + img2->width; j++)
+  for(int i = y; i < y + img2->height;i++){ //percorrer linhas da img1 apartir do ponto de começo de img2 até ao final da sua altura(height)
+    for (int j = x; j < x + img2->width; j++)//percorrer colunas de cada linha da img1 apartir do ponto de começo de img2 até ao final da sua largura(width)
     {
-      uint8 newPixel = ImageGetPixel(img2, x1, y1);
-      ImageSetPixel(img1, j, i, newPixel);
-      x1++;
+      uint8 newPixel = ImageGetPixel(img2, x1, y1); //dar valor do pixel correspondente da img2 para a nova variavel
+      ImageSetPixel(img1, j, i, newPixel);          //mudar o valor do pixel correspondente da img1 para o valor do pixel da img2(newPixel)
+      x1++;//passar para a próxima coluna
     }
-    x1=0;
-    y1++;
+    x1=0;//resetar colunas
+    y1++;//passar para a próxima linha
   }
 
 
@@ -733,23 +734,24 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidPos(img1, x, y));
   // Insert your code here!
 
+  //inicialização de varíaveis para ajudar a percorrer a img2
   int y1 = 0;
   int x1 = 0;
 
-  for(int i = y; i < y + img2->height;i++){
-    for (int j = x; j < x + img2->width; j++){
+  for(int i = y; i < y + img2->height;i++){ //percorrer as linhas da img1 apartir do ponto y até ao limite de altura (height) de img2
+    for (int j = x; j < x + img2->width; j++){  //percorrer colunas da img1 apartir do ponto x até ao limite de largura (width) de img2
 
-      if(ImageGetPixel(img2, x1, y1) != ImageGetPixel(img1, j, i))
-        return 0;
+      if(ImageGetPixel(img2, x1, y1) != ImageGetPixel(img1, j, i))  //comparar os pixeis correspondentes de cada imagem
+        return 0; //se diferentes retorna 0
 
-      x1++;
+      x1++; //avançar para a próxima coluna
 
     }
-    x1 = 0;
-    y1++;
+    x1 = 0; //recomeçar a contagem de colunas
+    y1++;   //passar para a próxima linha
   }
 
-  return 1;
+  return 1; //todos pixeis correspondentes analisados então a img2 é subimagem de img1 apartir da posição(x,y)
 
 
 
