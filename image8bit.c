@@ -639,7 +639,28 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   assert (ImageValidRect(img, x, y, w, h));
   // Insert your code here!
 
+  Image newImage = ImageCreate(w, h, img->maxval);
 
+  if(newImage == NULL)
+    return NULL;
+
+
+  //cordenadas para nova imagem
+  int x1 = 0;
+  int y1 = 0;
+  
+
+  for(int i = y; i < y + w; i++){ //percorrer o array x do valor recebido até ao limite (w) da imagem cortada
+    for(int j = x; j < x + h; j++){ //percorrer o array y do valor recebido até ao limite (h) da imagem cortada
+      uint8 newPixel = ImageGetPixel(img, j, i); //receber o valor do pixel correspondente
+      ImageSetPixel(newImage, x1, y1, newPixel);  //colocar o valor do pixel recebido no sítio correto
+      x1++; //passar para a próxima coluna
+    }
+    x1 = 0; //resetar o valor da coluna
+    y1++;   //passar para a próxima linha
+  }
+
+  return newImage;
 
 
 
@@ -660,7 +681,7 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
 
-
+  
 
 
 
