@@ -733,11 +733,23 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidPos(img1, x, y));
   // Insert your code here!
 
-  
+  int y1 = 0;
+  int x1 = 0;
 
+  for(int i = y; i < y + img2->height;i++){
+    for (int j = x; j < x + img2->width; j++){
 
+      if(ImageGetPixel(img2, x1, y1) != ImageGetPixel(img1, j, i))
+        return 0;
 
+      x1++;
 
+    }
+    x1 = 0;
+    y1++;
+  }
+
+  return 1;
 
 
 
