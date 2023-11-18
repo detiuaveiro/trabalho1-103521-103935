@@ -681,8 +681,19 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
 
-  for(int i = y; i < y + img2; )
+  int y1 = 0;
+  int x1 = 0;
 
+  for(int i = y; i < y + img2->height;i++){
+    for (int j = x; j < x + img2->width; j++)
+    {
+      uint8 newPixel = ImageGetPixel(img2, x1, y1);
+      ImageSetPixel(img1, j, i, newPixel);
+      x1++;
+    }
+    x1=0;
+    y1++;
+  }
 
 
 
@@ -722,7 +733,7 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidPos(img1, x, y));
   // Insert your code here!
 
-
+  
 
 
 
