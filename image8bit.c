@@ -177,7 +177,7 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
 
   Image createdImage = malloc(sizeof(struct image));  //alocação de espaço para a nova imagem
 
-  if (createdImage == NULL){  //se a imagem criada é NULL
+  if (createdImage == NULL){  //se houve erro na alocação de espaço
 
     errCause = "Não foi possível alocar memória para nova imagem"; //mensagem de erro
     errno = 12; //número 12 para errno significa falha de alocação de memória
@@ -195,7 +195,7 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
 
   if (createdImage->pixel == NULL)  //Se houver erros na alocação de memória para os pixeis
   {
-    free(createdImage); //Remove a memória usada para guardar a imagem
+    free(createdImage); //liberta memória usada
     errCause = "Não foi possível alocar memória para os pixeis da nova imagem";//mensagem de erro
     errno = 12; //número 12 para errno significa falha de alocação de memória
     return NULL; //retorna NULL pois deu erro na criação da imagem
@@ -333,23 +333,20 @@ void ImageStats(Image img, uint8* min, uint8* max) { ///
   assert (img != NULL);
   // Insert your code here!
 
-  uint8* maxpixel, minpixel;  //criar variávei para guardar o pixel com valor máximo e minimo da imagem
-  maxpixel = img->pixel[0];   //iniciar valores
-  minpixel = img->pixel[0];
+  uint8 *maxpixel, *minpixel;  //criar ponteiros para guardar o pixel com valor máximo e minimo da imagem
+  maxpixel = &(img->pixel[0]);   //iniciar pointers, por isso & é necessário
+  minpixel = &(img->pixel[0]);
 
-  for (int i = 1; i < sizeof(img->pixel); i++){   //percorrer o array de pixeis
-    if  (maxpixel < img->pixel[i])  //comparar o antigo pixel com valor maior com o novo pixel
-      maxpixel = img->pixel[i];     //se isto acontecer fornecer novo valor ao maxpixel
+  for (int i = 1; i < img->width * img->height; i++){   //percorrer o array de pixeis //sizeof(img->pixel) fornece o tamanho do array em bytes logo é melhor utilizar isto
+    if  (*maxpixel < img->pixel[i])  //comparar o antigo pixel com valor maior com o novo pixel
+      maxpixel = &(img->pixel[i]);     //se isto acontecer fornecer novo valor ao maxpixel
     
-    if (minpixel > img->pixel[i])   //comparar o antigo pixel com o valor minimo com o novo pixel
-      minpixel = img->pixel[i];     //se isto acontecer fornecer novo valor ao minpixel
+    if (*minpixel > img->pixel[i])   //comparar o antigo pixel com o valor minimo com o novo pixel
+      minpixel = &(img->pixel[i]);     //se isto acontecer fornecer novo valor ao minpixel
   }
 
-  min = minpixel; //fornecer valor do pixel minimo à variável necessária
-  max = maxpixel; //fornecer valor do pixel máximo à variável necessária
-
-  free(minpixel); //libertar memória alocada
-  free(maxpixel); //ditto
+  *min = minpixel; //fornecer valor do pixel minimo à variável necessária
+  *max = maxpixel; //fornecer valor do pixel máximo à variável necessária
 
 }
 
@@ -367,51 +364,74 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   int rectwidthpos = x + w;   //descobrir em que espaço da reta x o novo retangulo se encontra
   int rectheightpos = y + h;  //descobrir em que espaço da reta y o novo retangulo se encontra
 
-  if (rectheightpos <= img->height && rectwidthpos <= img->width) //comparação do valor da height e width do novo retângulo com os respetivos valores na imagem original
-                                                                  //caso estes valores sejam maiores então o novo retângulo sai das dimensões da imagem original
-  {
-    return 1;
+
+  if(rectheightpos > img->height || rectwidthpos > img->width){
+
+    errCause = "O retângulo é inválido pois está fora dos limites da imagem";
+    errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
+    return -1;  //-1 em vez de NULL pois NULL é usado mais em contexto de pointers, mas ambos fazem o mesmo
   }
+
+  return 1;
+
+
+
+
+
+
+
+
+
+//comentado pois possívelmente redundante
+  //if (x >= img->width || y >= img->height || rectwidthpos > img->width || rectheightpos > img->height) { 
+
+  //       errCause = "O retângulo é inválido pois está fora dos limites da imagem";
+  //       errno = 22;
+  //       return NULL;
+  //   }
+
+
+  //comentado pois complica a leitura do código, mais tarde pode se descomentar
 
   //código para possíveis erros para dimensões dos retângulos
-  //errno = 22 significa que os valores dos argumentos fornecidos são inválidos
+  //errno = 22; //número 22 para errno significa que o argumento para a função é inválido significa que os valores dos argumentos fornecidos são inválidos
 
-  else if(x > img->width && y > img->width){ //erro nos valores x e y que se encontram fora das coordenadas da imagem
-    errCause = "Os valores de x e y fornecidos encontram-se fora dos limites da imagem";
-    errno = 22;
-    return NULL;
-  }
+  //else if(x > img->width && y > img->width){ //erro nos valores x e y que se encontram fora das coordenadas da imagem
+  //  errCause = "Os valores de x e y fornecidos encontram-se fora dos limites da imagem";
+  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
+  //  return NULL;
+  //}
 
-  else if(x > img->width){  //erro no valor x que se encontra fora das coordenadas da imagem
-    errCause = "O valor de x fornecido encontra-se fora dos limites da imagem";
-    errno = 22;
-    return NULL;
-  }
+  //else if(x > img->width){  //erro no valor x que se encontra fora das coordenadas da imagem
+  //  errCause = "O valor de x fornecido encontra-se fora dos limites da imagem";
+  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
+  //  return NULL;
+  //}
 
-  else if(y > img->height){ //erro no valor y que se encontra fora das coordenadas da imagem
-    errCause = "O valor de y fornecido encontra-se fora dos limites da imagem";
-    errno = 22;
-    return NULL;
-  }
+  //else if(y > img->height){ //erro no valor y que se encontra fora das coordenadas da imagem
+  //  errCause = "O valor de y fornecido encontra-se fora dos limites da imagem";
+  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
+  //  return NULL;
+  //}
 
-  else if(rectheightpos > img->height && rectwidthpos > img->width){ //erro em que o retângulo sai do limite em ambas altura e largura
-    errCause = "Altura e largura do novo retângulo são incompatíveis com a imagem, pois este retângulo encontra-se for dos limites da imagem";
-    errno = 22;
-    return NULL;
-  }
+  //else if(rectheightpos > img->height && rectwidthpos > img->width){ //erro em que o retângulo sai do limite em ambas altura e largura
+  //  errCause = "Altura e largura do novo retângulo são incompatíveis com a imagem, pois este retângulo encontra-se for dos limites da imagem";
+  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
+  //  return NULL;
+  //}
 
 
-  else if (rectheightpos > img->height){  //erro em que o retângulo sai do limite da altura
-    errCause = "Altura do novo retângulo é incompatível com a imagem, sendo que a sua altura encontra-se fora dos limites da imagem";
-    errno = 22;
-    return NULL;
-  }
+  //else if (rectheightpos > img->height){  //erro em que o retângulo sai do limite da altura
+  //  errCause = "Altura do novo retângulo é incompatível com a imagem, sendo que a sua altura encontra-se fora dos limites da imagem";
+  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
+  //  return NULL;
+  //}
 
-  else if (rectwidthpos > img->width){  //erro em que o retângulo sai do lime da largura
-    errCause = "Largura do novo retângulo é incompatível com a imagem, sendo que a sua largura encontra-se fora dos limites da imagem";
-    errno = 22;
-    return NULL;
-  }
+  //else if (rectwidthpos > img->width){  //erro em que o retângulo sai do lime da largura
+  //  errCause = "Largura do novo retângulo é incompatível com a imagem, sendo que a sua largura encontra-se fora dos limites da imagem";
+  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
+  //  return NULL;
+  //}
   
 
 
@@ -434,15 +454,9 @@ static inline int G(Image img, int x, int y) {
   // Insert your code here!
 
   int imgwidth = img->width;        //tamanho de uma linha
-  index = imgwidth * (y - 1) + x;   //index é o valor do tamanho da linha * número de linhas y, pois y começa em 0, mais os restantes valores da última linha, que será x
+  index = imgwidth * y + x;         //index é o valor do tamanho da linha * número de linhas y, pois y começa em 0, mais os restantes valores de x
 
-
-
-
-
-
-
-  assert (0 <= index && index < img->width*img->height);
+  assert (0 <= index && index < img->width * img->height); //verificar que o index se encontra dentro dos limites
   return index;
 }
 
@@ -478,15 +492,13 @@ void ImageNegative(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
 
-  for (int i = 0; i<sizeof(img->pixel); i++)  //percorrer array de pixeis
+  for (int i = 0; i<img->width * img->height; i++)  //percorrer array de pixeis //sizeof(img->pixel) fornece o tamanho do array em bytes logo é melhor utilizar isto
     img->pixel[i] = img->maxval - img->pixel[i];      //remover o valor do pixel i a maxval(valor máximo do pixel) de forma a inverter, exs.: 255 -> 255 - 255 = 0; 0 -> 255 - 0 = 255; 200 -> 255 - 200 = 55; isto no caso de 255 ser o maxval
  
 
-
-
-
-
 }
+
+
 
 /// Apply threshold to image.
 /// Transform all pixels with level<thr to black (0) and
@@ -495,17 +507,13 @@ void ImageThreshold(Image img, uint8 thr) { ///
   assert (img != NULL);
   // Insert your code here!
 
-  for (int i = 0; i<sizeof(img->pixel); i++){ //percorrer array de pixeis
-    if (img->pixel[i] < thr)
-      img->pixel[i] = 0;
+  for (int i = 0; i < img->width * img->height; i++){ //percorrer array de pixeis //sizeof(img->pixel) fornece o tamanho do array em bytes logo é melhor utilizar isto
+    if (img->pixel[i] < thr)  //valor do pixel não chegou ao limite 
+      img->pixel[i] = 0;      //então dá-lhes o valor de 0 para que fiquem pretos
     else
-      img->pixel[i] = img->maxval;
+      img->pixel[i] = img->maxval;  //caso contrário dá lhes o valor máximo permitido pela img
 
   }  
-
-
-
-
 
 }
 
@@ -520,13 +528,15 @@ void ImageBrighten(Image img, double factor) { ///
 
   assert (factor >= 0.0);
 
-  for (int i = 0; i < sizeof(img->pixel); i++){ //percorrer array de pixeis
+  for (int i = 0; i < img->width * img->height; i++){ //percorrer array de pixeis //size of pixel devolve o tamanho do array em bytes logo assim é melhor
 
-    if (img->pixel[i] * factor > img->maxval) // novo valor é maior que maxval
+    double newPixel = img->pixel[i] * factor; //desnecessário mas melhor para leitura, dentro do ciclo for pois é desnecessário fora
+
+    if (newPixel > img->maxval)               // novo valor é maior que maxval
       img->pixel[i] = img->maxval;            // então o novo valor fica maxval
 
-    else 
-      img->pixel[i] = (int) (img->pixel[i] * factor + 0.5); //caso contrário o pixel terá apenas o seu valor multiplicado normalmente
+    else //caso contrário o pixel terá apenas o seu valor multiplicado normalmente, o que vai acabar em erros quando convertido em uint8, pois a conversão é um arredondamento por excesso, ao somar 0.5 o arredondamento será sempre certo
+      img->pixel[i] = (uint8) (newPixel + 0.5); 
   }
 
 }
@@ -558,33 +568,19 @@ Image ImageRotate(Image img) { ///
   // Insert your code here!
 
 
-  //falta malloc de newImg
-  Image newImg = malloc(sizeof(struct(image)); //alocaçao de espaço?
-	// nao deve estar bem
-
-  Image newImg = img;
   uint8 newPixel;
+  Image newImg = ImageCreate(img->height, img->width, img->maxval); //alocação de espaço para nova imagem
 
-  for(int x = 0; x < sizeof(img->width); x++)
-    for (int y = 0; y < sizeof(img->height); y++)
+  for(int x = 0; x < img->width; x++) //percorrer todo x
+    for (int y = 0; y < img->height; y++) //para todo x percorrer todo y
     {
-      newPixel = ImageGetPixel(img, x, y);
-      ImageSetPixel(newImg, )
+      newPixel = ImageGetPixel(img, x, y);  //fornecer ao novo pixel o pixel correspondente da imagem original (img)
+      ImageSetPixel(newImg, y, img->width - x - 1, newPixel); //rodar imagem 90 graus anti-clockwise
     }
     
 
 
-
-
-
-
-
-
-
-
-
-
-
+  return newImg;
 }
 
 /// Mirror an image = flip left-right.
@@ -597,42 +593,31 @@ Image ImageRotate(Image img) { ///
 Image ImageMirror(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
-
-
-
-  //falta malloc de newImg
-	Image newImg = malloc(sizeof(struct(image)); //alocaçao de espaço?
-  // ta igual ao de cima logo tambem nao deve tar bem
   
-  Image newImg = img;
-  uint8 newPixel;
+	Image newImg = ImageCreate(img->width, img->height, img->maxval);
+  if (newImg == NULL) {
+        // Erro já foi feito em ImageCreate
+        return NULL;
+    }
 
-  for(int x = 0; x < sizeof(img->width); x++)
-    for (int y = 0; y < sizeof(img->height); y++)
+  for(int x = 0; x < img->width; x++) //percorrer todo x
+    for (int y = 0; y < img->height; y++)//para x percorrer todos os y
     {
-      newPixel = ImageGetPixel(img, x, y);
-      ImageSetPixel(newImg, img->width - x, y, newPixel);
+      uint8 newPixel = ImageGetPixel(img, x, y);  //fornecer valor ao novo pixel do pixel correspondente da imagem original
+      if (errno)
+      {
+        //perguntar ao professor sobre isto? if(errno) certo?  errCause e errno necessários ou não visto que o ImageGetPixel tem asserts?
+        errCause = "Não foi possível aceder ao pixel da imagem original"; //mensagem de erro
+        errno = 22; //número 22 para errno significa que o argumento para a função é inválido
+        ImageDestroy(newImg); //utilizar função ImageDestroy para libertar o espaço ocupado
+        return NULL;
+  
+      }
+      
+      ImageSetPixel(newImg, img->width - x - 1, y, newPixel); //fornecer ao pixel da nova imagem correspondente o valor de newPixel
     }
 
   return newImg;
-
-
-  //a faltar impletação de apanhar erros
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
