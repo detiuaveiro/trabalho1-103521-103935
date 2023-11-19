@@ -345,8 +345,8 @@ void ImageStats(Image img, uint8* min, uint8* max) { ///
       minpixel = &(img->pixel[i]);     //se isto acontecer fornecer novo valor ao minpixel
   }
 
-  *min = minpixel; //fornecer valor do pixel minimo à variável necessária
-  *max = maxpixel; //fornecer valor do pixel máximo à variável necessária
+  *min = *minpixel; //fornecer valor do pixel minimo à variável necessária (tava  a dar erro e acho que meter um * antes de min e maxpixel ajudou)
+  *max = *maxpixel; //fornecer valor do pixel máximo à variável necessária
 
 }
 
@@ -714,15 +714,16 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
+	for (int i = y; i < y + img2->height; i++) {
+    for (int j = x; j < x + img2->width; j++) {
+      uint8 pixel1 = ImageGetPixel(img1, j, i);
+      uint8 pixel2 = ImageGetPixel(img2, j - x, i - y);
 
+      uint8 blendedPixel = (uint8)(alpha * pixel2 + (1.0 - alpha) * pixel1); // blen dos pixeis com o alpha
 
-
-
-
-
-
-
-
+      ImageSetPixel(img1, j, i, blendedPixel);
+    }
+  }
 }
 
 /// Compare an image to a subimage of a larger image.
