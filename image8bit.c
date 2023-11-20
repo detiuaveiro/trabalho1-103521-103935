@@ -719,7 +719,7 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
       uint8 pixel1 = ImageGetPixel(img1, j, i);
       uint8 pixel2 = ImageGetPixel(img2, j - x, i - y);
 
-      uint8 blendedPixel = (uint8)(alpha * pixel2 + (1.0 - alpha) * pixel1); // blen dos pixeis com o alpha
+      uint8 blendedPixel = (uint8)(alpha * pixel2 + (1.0 - alpha) * pixel1 + 0.5); // blen dos pixeis com o alpha e arredonda
 
       ImageSetPixel(img1, j, i, blendedPixel);
     }
@@ -766,14 +766,16 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   assert (img1 != NULL);
   assert (img2 != NULL);
   // Insert your code here!
-
-
-
-
-
-
-
-
+  for(int i = 0; i < img1.height - img2->height;i++){ //percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
+    for (int j = 0; j < img1.width - img2->width; j++){  //percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
+      if(ImageMatchSubImage(img1 , j, i, img2)){
+        *px= j;
+        *py =i;
+        return 1;
+      }
+    }
+  }
+  return 0;
 }
 
 
@@ -785,13 +787,33 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
 /// The image is changed in-place.
 void ImageBlur(Image img, int dx, int dy) { ///
   // Insert your code here!
-
-
-
-
-
-
-
-
+  assert (img != NULL)
+  Image imgcopy = ImageCreate(img->width, img->height, img->maxval); //criar uma copia da imagem para aplicar o filtro
+  float sum;
+  int num, ImageHeight = img-> height, ImageWidth = img-> width;
+  for(int position = 0; pos < ImageHeight * ImageWidth; position++){ //copiar a posição da imagem
+    imgcopy->pixel[position] = img->pixel[position];
+  }
+  for(int i = 0; i < ImageHeight ;i++){ //percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
+    for (int j = 0; j < ImageWidth; j++){  //percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
+      sum =0;
+      num=0;
+      for (int i_height = i-dy; i_height <= i + dy; i_height++){ //percorrer o retangulo
+        if (i_height < 0 || i_height >= ImageHeight)
+          continue;
+        for (int j_width = j-dx; j_width <= j + dx; j_width++){ //percorrer o retangulo
+          if (j_width < 0 || j_width >= ImageWidth){
+            continue;
+          sum += ImageGetPixel(imgcopy,j_width, i_height);
+          num ++;
+          }
+        }
+        ImageSetPixel(img, j, i, (int)((sum)/num) + 0.5);
+      }
+    
+    }
+  }
+  ImageDestroy(&imgcopy);
 }
+
 
