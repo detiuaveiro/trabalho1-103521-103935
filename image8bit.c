@@ -801,18 +801,18 @@ void ImageBlur(Image img, int dx, int dy) { ///
       for (int i_height = i-dy; i_height <= i + dy; i_height++){
         if (i_height < 0 || i_height >= ImageHeight)
           continue;
+        
         for (int j_width = j-dx; j_width <= j + dx; j_width++){
-          if (j_width < 0 || j_width >= ImageWidth){
+          if (j_width < 0 || j_width >= ImageWidth)
             continue;
           sum += ImageGetPixel(imgcopy,j_width, i_height);
           num ++;
           }
         }
-        ImageSetPixel(img, j, i, (int)((sum)/num) + 0.5);
+        ImageSetPixel(img, j, i, (int)(((sum)/num) + 0.5));
       }
     
     }
-  }
   ImageDestroy(&imgcopy);
 }
 
