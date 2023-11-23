@@ -609,7 +609,7 @@ Image ImageMirror(Image img) { ///
         //perguntar ao professor sobre isto? if(errno) certo?  errCause e errno necessários ou não visto que o ImageGetPixel tem asserts?
         errCause = "Não foi possível aceder ao pixel da imagem original"; //mensagem de erro
         errno = 22; //número 22 para errno significa que o argumento para a função é inválido
-        ImageDestroy(newImg); //utilizar função ImageDestroy para libertar o espaço ocupado
+        ImageDestroy(&newImg); //utilizar função ImageDestroy para libertar o espaço ocupado
         return NULL;
   
       }
