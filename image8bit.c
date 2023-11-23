@@ -591,7 +591,7 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
 
-  for(int i = 0; i < img2->height; i++) // variável i corresponde à coordenada y da newImage
+  for(int i = 0; i < img2->height; i++) //variável i corresponde à coordenada y da newImage
     for(int j = 0; j< img2->width; j++) //variável j corresponde à coordenada x da newImage
       ImageSetPixel(img1, x+j, y+i, ImageGetPixel(img2, j, i)); //x+j e y+i correspondem ao pixel a ser mudado na img1
 
@@ -609,14 +609,11 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
   assert (img2 != NULL);
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
-	for (int i = y; i < y + img2->height; i++) {
-    for (int j = x; j < x + img2->width; j++) {
-      uint8 pixel1 = ImageGetPixel(img1, j, i);
-      uint8 pixel2 = ImageGetPixel(img2, j - x, i - y);
+	for (int i = 0; i < img2->height; i++) {  //variável i corresponde à coordenada y da img2
+    for (int j = 0; j < img2->width; j++) { //variável j corresponde à coordenada x da img2
+      uint8 blendedPixel = (uint8)(alpha * ImageGetPixel(img2, j, i) + (1.0 - alpha) * ImageGetPixel(img1, x+j, y+i) + 0.5); // blend do pixel com o alpha e arredonda
 
-      uint8 blendedPixel = (uint8)(alpha * pixel2 + (1.0 - alpha) * pixel1 + 0.5); // blend dos pixeis com o alpha e arredonda
-
-      ImageSetPixel(img1, j, i, blendedPixel);
+      ImageSetPixel(img1, x+j, y+i, blendedPixel);
     }
   }
 }
@@ -630,24 +627,17 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidPos(img1, x, y));
   // Insert your code here!
 
-  //inicialização de varíaveis para ajudar a percorrer a img2
-  int y1 = 0;
-  int x1 = 0;
+  for(int i = 0; i < img2->height;i++){ //i corresponde às coordenadas y de img2
+    for (int j = 0; j < img2->width; j++){  //j corresponde às coordenadas x de img2
 
-  for(int i = y; i < y + img2->height;i++){ //percorrer as linhas da img1 apartir do ponto y até ao limite de altura (height) de img2
-    for (int j = x; j < x + img2->width; j++){  //percorrer colunas da img1 apartir do ponto x até ao limite de largura (width) de img2
-
-      if(ImageGetPixel(img2, x1, y1) != ImageGetPixel(img1, j, i))  //comparar os pixeis correspondentes de cada imagem
-        return 0; //se diferentes retorna 0
-
-      x1++; //avançar para a próxima coluna
+      if(ImageGetPixel(img2, i, j) != ImageGetPixel(img1, x+j, y+i))  //comparar os pixeis correspondentes de cada imagem
+        return 0; 
 
     }
-    x1 = 0; //recomeçar a contagem de colunas
-    y1++;   //passar para a próxima linha
+
   }
 
-  return 1; //todos pixeis correspondentes analisados então a img2 é subimagem de img1 apartir da posição(x,y)
+  return 1;
 
 
 
