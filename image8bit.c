@@ -374,69 +374,6 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
 
   return 1;
 
-
-
-
-
-
-
-
-
-//comentado pois possívelmente redundante
-  //if (x >= img->width || y >= img->height || rectwidthpos > img->width || rectheightpos > img->height) { 
-
-  //       errCause = "O retângulo é inválido pois está fora dos limites da imagem";
-  //       errno = 22;
-  //       return NULL;
-  //   }
-
-
-  //comentado pois complica a leitura do código, mais tarde pode se descomentar
-
-  //código para possíveis erros para dimensões dos retângulos
-  //errno = 22; //número 22 para errno significa que o argumento para a função é inválido significa que os valores dos argumentos fornecidos são inválidos
-
-  //else if(x > img->width && y > img->width){ //erro nos valores x e y que se encontram fora das coordenadas da imagem
-  //  errCause = "Os valores de x e y fornecidos encontram-se fora dos limites da imagem";
-  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
-  //  return NULL;
-  //}
-
-  //else if(x > img->width){  //erro no valor x que se encontra fora das coordenadas da imagem
-  //  errCause = "O valor de x fornecido encontra-se fora dos limites da imagem";
-  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
-  //  return NULL;
-  //}
-
-  //else if(y > img->height){ //erro no valor y que se encontra fora das coordenadas da imagem
-  //  errCause = "O valor de y fornecido encontra-se fora dos limites da imagem";
-  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
-  //  return NULL;
-  //}
-
-  //else if(rectheightpos > img->height && rectwidthpos > img->width){ //erro em que o retângulo sai do limite em ambas altura e largura
-  //  errCause = "Altura e largura do novo retângulo são incompatíveis com a imagem, pois este retângulo encontra-se for dos limites da imagem";
-  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
-  //  return NULL;
-  //}
-
-
-  //else if (rectheightpos > img->height){  //erro em que o retângulo sai do limite da altura
-  //  errCause = "Altura do novo retângulo é incompatível com a imagem, sendo que a sua altura encontra-se fora dos limites da imagem";
-  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
-  //  return NULL;
-  //}
-
-  //else if (rectwidthpos > img->width){  //erro em que o retângulo sai do lime da largura
-  //  errCause = "Largura do novo retângulo é incompatível com a imagem, sendo que a sua largura encontra-se fora dos limites da imagem";
-  //  errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
-  //  return NULL;
-  //}
-  
-
-
-
-
 }
 
 /// Pixel get & set operations
@@ -644,27 +581,11 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
   if(newImage == NULL)
     return NULL;
 
-
-  //cordenadas para nova imagem
-  int x1 = 0;
-  int y1 = 0;
-  
-
-  for(int i = y; i < y + h; i++){ //percorrer o array x do valor recebido até ao limite (w) da imagem cortada
-    for(int j = x; j < x + w; j++){ //percorrer o array y do valor recebido até ao limite (h) da imagem cortada
-      uint8 newPixel = ImageGetPixel(img, j, i); //receber o valor do pixel correspondente
-      ImageSetPixel(newImage, x1, y1, newPixel);  //colocar o valor do pixel recebido no sítio correto
-      x1++; //passar para a próxima coluna
-    }
-    x1 = 0; //resetar o valor da coluna
-    y1++;   //passar para a próxima linha
-  }
-
+  for(int i = 0; i < h; i++)  // variável i corresponde à coordenada y da newImage
+    for(int j = 0; j < w; j++)  //variável j corresponde à coordenada x da new image
+      ImageSetPixel(newImage, j,i,ImageGetPixel(img,x+j,x+i));     //x+j e x+i correspondem ao pixel correspondente da img, com cada aumento das coordenadas da newimage existe um aumento correspondente às coordenadas de img, com começo em (x,y)
+   
   return newImage;
-
-
-
-
 
 }
 
@@ -681,24 +602,9 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
   assert (ImageValidRect(img1, x, y, img2->width, img2->height));
   // Insert your code here!
 
-  //inicialização de varíaveis para ajudar a percorrer a img2
-  int y1 = 0;
-  int x1 = 0;
-
-  for(int i = y; i < y + img2->height;i++){ //percorrer linhas da img1 apartir do ponto de começo de img2 até ao final da sua altura(height)
-    for (int j = x; j < x + img2->width; j++)//percorrer colunas de cada linha da img1 apartir do ponto de começo de img2 até ao final da sua largura(width)
-    {
-      uint8 newPixel = ImageGetPixel(img2, x1, y1); //dar valor do pixel correspondente da img2 para a nova variavel
-      ImageSetPixel(img1, j, i, newPixel);          //mudar o valor do pixel correspondente da img1 para o valor do pixel da img2(newPixel)
-      x1++;//passar para a próxima coluna
-    }
-    x1=0;//resetar colunas
-    y1++;//passar para a próxima linha
-  }
-
-
-
-
+  for(int i = 0; i < img2->height; i++) // variável i corresponde à coordenada y da newImage
+    for(int j = 0; j< img2->width; j++) //variável j corresponde à coordenada x da newImage
+      ImageSetPixel(img1, x+j, y+i, ImageGetPixel(img2, j, i)); //x+j e y+i correspondem ao pixel a ser mudado na img1; ou seja com cada aumento de j e i mudam ao mesmo ritmo o pixel correspondente a img1 e img2, começando img1 por (x,y) e img2 por (0,0)
 
 
 }
@@ -719,7 +625,7 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
       uint8 pixel1 = ImageGetPixel(img1, j, i);
       uint8 pixel2 = ImageGetPixel(img2, j - x, i - y);
 
-      uint8 blendedPixel = (uint8)(alpha * pixel2 + (1.0 - alpha) * pixel1 + 0.5); // blen dos pixeis com o alpha e arredonda
+      uint8 blendedPixel = (uint8)(alpha * pixel2 + (1.0 - alpha) * pixel1 + 0.5); // blend dos pixeis com o alpha e arredonda
 
       ImageSetPixel(img1, j, i, blendedPixel);
     }
