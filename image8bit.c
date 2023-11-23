@@ -613,7 +613,12 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha) { ///
     for (int j = 0; j < img2->width; j++) { //variável j corresponde à coordenada x da img2
       uint8 blendedPixel = (uint8)(alpha * ImageGetPixel(img2, j, i) + (1.0 - alpha) * ImageGetPixel(img1, x+j, y+i) + 0.5); // blend do pixel com o alpha e arredonda
 
-      ImageSetPixel(img1, x+j, y+i, blendedPixel);
+      if (blendedPixel < 0)
+        ImageSetPixel(img1, x+j, y+i, 0); //valor não pode ser menor que 0
+      else if (blendedPixel > img1->maxval)
+        ImageSetPixel(img1, x+j, y+i, img1->maxval);//valor não pode ser maior que maxval
+      else
+        ImageSetPixel(img1, x+j, y+i, blendedPixel);
     }
   }
 }
@@ -654,8 +659,8 @@ int ImageLocateSubImage(Image img1, int* px, int* py, Image img2) { ///
   for(int i = 0; i < img1->height - img2->height;i++){ //percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
     for (int j = 0; j < img1->width - img2->width; j++){  //percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
       if(ImageMatchSubImage(img1 , j, i, img2)){
-        *px= j;
-        *py =i;
+        *px = j;
+        *py = i;
         return 1;
       }
     }
