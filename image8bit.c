@@ -15,7 +15,7 @@
 // 
 // 
 // 
-// Date:
+// Date: 26/11/2023
 //
 
 #include "image8bit.h"
@@ -177,11 +177,11 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
 
   Image createdImage = malloc(sizeof(struct image));  //alocação de espaço para a nova imagem
 
-  if (createdImage == NULL){  //se houve erro na alocação de espaço
+  if (createdImage == NULL){  //erro na alocação de memória
 
-    errCause = "Não foi possível alocar memória para nova imagem"; //mensagem de erro
+    errCause = "Não foi possível alocar memória para nova imagem";
     errno = 12; //número 12 para errno significa falha de alocação de memória
-    return NULL;//Se falhar para criar espaço para a nova imagem dá return a nulo pois houve um erro
+    return NULL;
   }
 
   //Fornecer à nova imagem os valores usados na chamada da imagem
@@ -189,19 +189,19 @@ Image ImageCreate(int width, int height, uint8 maxval) { ///
   createdImage->height = height;
   createdImage->maxval = maxval;
   
-  //Aqui alocamos memória inicializada como 0 para os pixeis, os pixeis totais serão a altura(height) multiplicado pela largura(width)
-  //Usando o calloc em vez de malloc a memória alocada em vez de não ser inicializada será inicializada com o valor 0, ou seja pixeis pretos
+  
+  //Usando o calloc a memória será inicializada com o valor 0
   createdImage->pixel = calloc(width * height, sizeof(uint8));
 
   if (createdImage->pixel == NULL)  //Se houver erros na alocação de memória para os pixeis
   {
     free(createdImage); //liberta memória usada
-    errCause = "Não foi possível alocar memória para os pixeis da nova imagem";//mensagem de erro
+    errCause = "Não foi possível alocar memória para os pixeis da nova imagem";
     errno = 12; //número 12 para errno significa falha de alocação de memória
-    return NULL; //retorna NULL pois deu erro na criação da imagem
+    return NULL; 
   }
 
-  return createdImage; //retorna a imagem se tudo correu certo
+  return createdImage; 
 
 
 }
@@ -334,19 +334,20 @@ void ImageStats(Image img, uint8* min, uint8* max) { ///
   // Insert your code here!
 
   uint8 *maxpixel, *minpixel;  //criar ponteiros para guardar o pixel com valor máximo e minimo da imagem
-  maxpixel = &(img->pixel[0]);   //iniciar pointers, por isso & é necessário
+  //iniciar ponteiros
+  maxpixel = &(img->pixel[0]);   
   minpixel = &(img->pixel[0]);
 
-  for (int i = 1; i < img->width * img->height; i++){   //percorrer o array de pixeis //sizeof(img->pixel) fornece o tamanho do array em bytes logo é melhor utilizar isto
-    if  (*maxpixel < img->pixel[i])  //comparar o antigo pixel com valor maior com o novo pixel
-      maxpixel = &(img->pixel[i]);     //se isto acontecer fornecer novo valor ao maxpixel
+  for (int i = 1; i < img->width * img->height; i++){   //percorrer o array de pixeis 
+    if  (*maxpixel < img->pixel[i])  
+      maxpixel = &(img->pixel[i]);     //fornecer novo valor ao maxpixel
     
-    if (*minpixel > img->pixel[i])   //comparar o antigo pixel com o valor minimo com o novo pixel
-      minpixel = &(img->pixel[i]);     //se isto acontecer fornecer novo valor ao minpixel
+    if (*minpixel > img->pixel[i])  
+      minpixel = &(img->pixel[i]);     //fornecer novo valor ao minpixel
   }
 
-  *min = *minpixel; //fornecer valor do pixel minimo à variável necessária (tava  a dar erro e acho que meter um * antes de min e maxpixel ajudou)
-  *max = *maxpixel; //fornecer valor do pixel máximo à variável necessária
+  *min = *minpixel;
+  *max = *maxpixel;
 
 }
 
@@ -361,15 +362,15 @@ int ImageValidRect(Image img, int x, int y, int w, int h) { ///
   assert (img != NULL);
   // Insert your code here!
 
-  int rectwidthpos = x + w;   //descobrir em que espaço da reta x o novo retangulo se encontra
-  int rectheightpos = y + h;  //descobrir em que espaço da reta y o novo retangulo se encontra
+  int rectwidthpos = x + w;   //localização da posição em x máxima
+  int rectheightpos = y + h;  //localização da posição em y máxima
 
 
-  if(rectheightpos > img->height || rectwidthpos > img->width){
+  if(rectheightpos > img->height || rectwidthpos > img->width){ 
 
     errCause = "O retângulo é inválido pois está fora dos limites da imagem";
     errno = 22; //número 22 para errno significa que o argumento para a função é inválido;
-    return -1;  //-1 em vez de NULL pois NULL é usado mais em contexto de pointers, mas ambos fazem o mesmo
+    return -1;  
   }
 
   return 1;
@@ -391,7 +392,7 @@ static inline int G(Image img, int x, int y) {
   // Insert your code here!
 
   int imgwidth = img->width;        //tamanho de uma linha
-  index = imgwidth * y + x;         //index é o valor do tamanho da linha * número de linhas y, pois y começa em 0, mais os restantes valores de x
+  index = imgwidth * y + x;         //index é o valor se transformadas as coordenadas para um array
 
   assert (0 <= index && index < img->width * img->height); //verificar que o index se encontra dentro dos limites
   return index;
@@ -429,8 +430,8 @@ void ImageNegative(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
 
-  for (int i = 0; i<img->width * img->height; i++)  //percorrer array de pixeis //sizeof(img->pixel) fornece o tamanho do array em bytes logo é melhor utilizar isto
-    img->pixel[i] = img->maxval - img->pixel[i];      //remover o valor do pixel i a maxval(valor máximo do pixel) de forma a inverter, exs.: 255 -> 255 - 255 = 0; 0 -> 255 - 0 = 255; 200 -> 255 - 200 = 55; isto no caso de 255 ser o maxval
+  for (int i = 0; i<img->width * img->height; i++)  //percorrer array de pixeis 
+    img->pixel[i] = img->maxval - img->pixel[i];      //modificação do pixel i para o seu negativo
  
 
 }
@@ -472,7 +473,7 @@ void ImageBrighten(Image img, double factor) { ///
     if (newPixel > img->maxval)               // novo valor é maior que maxval
       img->pixel[i] = img->maxval;            // então o novo valor fica maxval
 
-    else //caso contrário o pixel terá apenas o seu valor multiplicado normalmente, o que vai acabar em erros quando convertido em uint8, pois a conversão é um arredondamento por excesso, ao somar 0.5 o arredondamento será sempre certo
+    else //valor multiplicado normalmente, soma com 0.5 para evitar erros de arredondamento
       img->pixel[i] = (uint8) (newPixel + 0.5); 
   }
 
@@ -504,15 +505,13 @@ Image ImageRotate(Image img) { ///
   assert (img != NULL);
   // Insert your code here!
 
-
-  uint8 newPixel;
   Image newImg = ImageCreate(img->height, img->width, img->maxval); //alocação de espaço para nova imagem
 
   for(int x = 0; x < img->width; x++) //percorrer todo x
     for (int y = 0; y < img->height; y++) //para todo x percorrer todo y
     {
-      newPixel = ImageGetPixel(img, x, y);  //fornecer ao novo pixel o pixel correspondente da imagem original (img)
-      ImageSetPixel(newImg, y, img->width - x - 1, newPixel); //rodar imagem 90 graus anti-clockwise
+      
+      ImageSetPixel(newImg, y, img->width - x - 1, ImageGetPixel(img, x, y)); //rodar imagem 90 graus anti-clockwise
     }
     
 
@@ -540,18 +539,8 @@ Image ImageMirror(Image img) { ///
   for(int x = 0; x < img->width; x++) //percorrer todo x
     for (int y = 0; y < img->height; y++)//para x percorrer todos os y
     {
-      uint8 newPixel = ImageGetPixel(img, x, y);  //fornecer valor ao novo pixel do pixel correspondente da imagem original
-      if (errno)
-      {
-        //perguntar ao professor sobre isto? if(errno) certo?  errCause e errno necessários ou não visto que o ImageGetPixel tem asserts?
-        errCause = "Não foi possível aceder ao pixel da imagem original"; //mensagem de erro
-        errno = 22; //número 22 para errno significa que o argumento para a função é inválido
-        ImageDestroy(&newImg); //utilizar função ImageDestroy para libertar o espaço ocupado
-        return NULL;
-  
-      }
       
-      ImageSetPixel(newImg, img->width - x - 1, y, newPixel); //fornecer ao pixel da nova imagem correspondente o valor de newPixel
+      ImageSetPixel(newImg, img->width - x - 1, y, ImageGetPixel(img, x, y));
     }
 
   return newImg;
@@ -583,7 +572,7 @@ Image ImageCrop(Image img, int x, int y, int w, int h) { ///
 
   for(int i = 0; i < h; i++)  // variável i corresponde à coordenada y da newImage
     for(int j = 0; j < w; j++)  //variável j corresponde à coordenada x da new image
-      ImageSetPixel(newImage, j,i,ImageGetPixel(img,x+j,x+i));     //x+j e x+i correspondem ao pixel correspondente da img, com cada aumento das coordenadas da newimage existe um aumento correspondente às coordenadas de img, com começo em (x,y)
+      ImageSetPixel(newImage, j,i,ImageGetPixel(img,x+j,x+i));     //x+j e x+i correspondem ao pixel correspondente da img
    
   return newImage;
 
@@ -604,7 +593,7 @@ void ImagePaste(Image img1, int x, int y, Image img2) { ///
 
   for(int i = 0; i < img2->height; i++) // variável i corresponde à coordenada y da newImage
     for(int j = 0; j< img2->width; j++) //variável j corresponde à coordenada x da newImage
-      ImageSetPixel(img1, x+j, y+i, ImageGetPixel(img2, j, i)); //x+j e y+i correspondem ao pixel a ser mudado na img1; ou seja com cada aumento de j e i mudam ao mesmo ritmo o pixel correspondente a img1 e img2, começando img1 por (x,y) e img2 por (0,0)
+      ImageSetPixel(img1, x+j, y+i, ImageGetPixel(img2, j, i)); //x+j e y+i correspondem ao pixel a ser mudado na img1
 
 
 }
