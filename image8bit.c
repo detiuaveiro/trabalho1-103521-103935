@@ -171,7 +171,7 @@ Image ImageCreate(int width, int height, uint8 maxval)
   assert(width >= 0);
   assert(height >= 0);
   assert(0 < maxval && maxval <= PixMax);
-  // Insert your code here!
+  
 
   Image createdImage = malloc(sizeof(struct image)); // alocação de espaço para a nova imagem
 
@@ -210,7 +210,7 @@ Image ImageCreate(int width, int height, uint8 maxval)
 void ImageDestroy(Image *imgp)
 { ///
   assert(imgp != NULL);
-  // Insert your code here!
+  
 
   free((*imgp)->pixel); // libertar memória alocada para o array pixel de imgp
   free(*imgp);          // libertar memória associada com imgp
@@ -335,7 +335,7 @@ int ImageMaxval(Image img)
 void ImageStats(Image img, uint8 *min, uint8 *max)
 { ///
   assert(img != NULL);
-  // Insert your code here!
+  
 
   uint8 *maxpixel, *minpixel; // criar ponteiros para guardar o pixel com valor máximo e minimo da imagem
   // iniciar ponteiros
@@ -366,7 +366,7 @@ int ImageValidPos(Image img, int x, int y)
 int ImageValidRect(Image img, int x, int y, int w, int h)
 { ///
   assert(img != NULL);
-  // Insert your code here!
+  
 
   int rectwidthpos = x + w;  // localização da posição em x máxima
   int rectheightpos = y + h; // localização da posição em y máxima
@@ -395,7 +395,7 @@ int ImageValidRect(Image img, int x, int y, int w, int h)
 static inline int G(Image img, int x, int y)
 {
   int index;
-  // Insert your code here!
+  
 
   int imgwidth = img->width; // tamanho de uma linha
   index = imgwidth * y + x;  // index é o valor se transformadas as coordenadas para um array
@@ -435,7 +435,7 @@ void ImageSetPixel(Image img, int x, int y, uint8 level)
 void ImageNegative(Image img)
 { ///
   assert(img != NULL);
-  // Insert your code here!
+  
 
   for (int i = 0; i < img->width * img->height; i++) // percorrer array de pixeis
     img->pixel[i] = img->maxval - img->pixel[i];     // modificação do pixel i para o seu negativo
@@ -447,7 +447,7 @@ void ImageNegative(Image img)
 void ImageThreshold(Image img, uint8 thr)
 { ///
   assert(img != NULL);
-  // Insert your code here!
+  
 
   for (int i = 0; i < img->width * img->height; i++)
   {                          // percorrer array de pixeis //sizeof(img->pixel) fornece o tamanho do array em bytes logo é melhor utilizar isto
@@ -466,7 +466,7 @@ void ImageBrighten(Image img, double factor)
 { ///
   assert(img != NULL);
   // ? assert (factor >= 0.0);
-  // Insert your code here!
+  
 
   assert(factor >= 0.0);
 
@@ -507,7 +507,7 @@ void ImageBrighten(Image img, double factor)
 Image ImageRotate(Image img)
 { ///
   assert(img != NULL);
-  // Insert your code here!
+  
 
   Image newImg = ImageCreate(img->height, img->width, img->maxval); // alocação de espaço para nova imagem
 
@@ -531,7 +531,7 @@ Image ImageRotate(Image img)
 Image ImageMirror(Image img)
 { ///
   assert(img != NULL);
-  // Insert your code here!
+  
 
   Image newImg = ImageCreate(img->width, img->height, img->maxval);
   if (newImg == NULL)
@@ -566,7 +566,7 @@ Image ImageCrop(Image img, int x, int y, int w, int h)
 { ///
   assert(img != NULL);
   assert(ImageValidRect(img, x, y, w, h));
-  // Insert your code here!
+  
 
   Image newImage = ImageCreate(w, h, img->maxval);
 
@@ -591,7 +591,7 @@ void ImagePaste(Image img1, int x, int y, Image img2)
   assert(img1 != NULL);
   assert(img2 != NULL);
   assert(ImageValidRect(img1, x, y, img2->width, img2->height));
-  // Insert your code here!
+  
 
   for (int i = 0; i < img2->height; i++)                            // variável i corresponde à coordenada y da newImage
     for (int j = 0; j < img2->width; j++)                           // variável j corresponde à coordenada x da newImage
@@ -609,7 +609,8 @@ void ImageBlend(Image img1, int x, int y, Image img2, double alpha)
   assert(img1 != NULL);
   assert(img2 != NULL);
   assert(ImageValidRect(img1, x, y, img2->width, img2->height));
-  // Insert your code here!
+  
+
   for (int i = 0; i < img2->height; i++)
   { // variável i corresponde à coordenada y da img2
     for (int j = 0; j < img2->width; j++)
@@ -634,7 +635,7 @@ int ImageMatchSubImage(Image img1, int x, int y, Image img2)
   assert(img1 != NULL);
   assert(img2 != NULL);
   assert(ImageValidPos(img1, x, y));
-  // Insert your code here!
+  
 
   for (int i = 0; i < img2->height; i++)
   { // i corresponde às coordenadas y de img2
@@ -657,7 +658,7 @@ int ImageLocateSubImage(Image img1, int *px, int *py, Image img2)
 { ///
   assert(img1 != NULL);
   assert(img2 != NULL);
-  // Insert your code here!
+  
   for (int i = 0; i < img1->height - img2->height; i++)
   { // percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
     for (int j = 0; j < img1->width - img2->width; j++)
@@ -681,7 +682,6 @@ int ImageLocateSubImage(Image img1, int *px, int *py, Image img2)
 /// The image is changed in-place.
 void ImageBlur(Image img, int dx, int dy)
 { ///
-  // Insert your code here!
   assert(img != NULL);
 
   int ImageHeight = img->height;
@@ -718,60 +718,3 @@ void ImageBlur(Image img, int dx, int dy)
 
     ImageDestroy(&imgCopy);//libertar espaço
 }
-
-// for (int i = 0; i < img->height; i++) {
-//     for (int j = 0; j < img->width; j++) {
-//       float sum = 0.0;
-//       int num = 0;
-//
-//       for (int i_height = i - dy; i_height <= i + dy; i_height++) {
-//         if (i_height < 0 || i_height >= img->height)
-//           continue;
-//
-//         for (int j_width = j - dx; j_width <= j + dx; j_width++) {
-//           if (j_width < 0 || j_width >= img->width)
-//             continue;
-//
-//           sum += ImageGetPixel(img, j_width, i_height);
-//           num++;
-//         }
-//       }
-//
-//       int newPixelValue = (int)(((sum) / num) + 0.5);
-//       ImageSetPixel(img, j, i, newPixelValue);
-//     }
-//   }
-
-//// Aplicar blur horizontal
-// for (int i = 0; i < img->height; i++) {
-//   for (int j = 0; j < img->width; j++) {
-//     float sum = 0;
-//     int num = 0;
-//
-//     for (int k = j - dx; k <= j + dx; k++) { //percorrer pixeis horizontais
-//       if (k >= 0 && k < img->width) {
-//         sum += ImageGetPixel(img, k, i);  //sumar os valores dos pixeis
-//         num++;
-//       }
-//     }
-//
-//     ImageSetPixel(img, j, i, (int)(((sum) / num) + 0.5));
-//   }
-// }
-//
-// // Aplicar blur vertical
-// for (int i = 0; i < img->height; i++) {
-//   for (int j = 0; j < img->width; j++) {
-//     float sum = 0;
-//     int num = 0;
-//
-//     for (int k = i - dy; k <= i + dy; k++) {  //percorrer pixeis verticais
-//       if (k >= 0 && k < img->height) {
-//         sum += ImageGetPixel(img, j, k);    //sumar os valores dos pixeis
-//         num++;
-//       }
-//     }
-//
-//     ImageSetPixel(img, j, i, (int)(((sum) / num) + 0.5));
-//   }
-// }
