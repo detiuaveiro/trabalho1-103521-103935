@@ -683,36 +683,40 @@ void ImageBlur(Image img, int dx, int dy)
 { ///
   // Insert your code here!
   assert(img != NULL);
-  Image imgcopy = ImageCreate(img->width, img->height, img->maxval); // criar uma copia da imagem para aplicar o filtro
-  float sum;
-  int num, ImageHeight = img->height, ImageWidth = img->width;
-  for (int position = 0; position < ImageHeight * ImageWidth; position++)
-  { // copiar a posição da imagem
-    imgcopy->pixel[position] = img->pixel[position];
-  }
-  for (int i = 0; i < ImageHeight; i++)
-  { // percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
-    for (int j = 0; j < ImageWidth; j++)
-    { // percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
-      sum = 0;
-      num = 0;
-      for (int i_height = i - dy; i_height <= i + dy; i_height++)
-      {
-        if (i_height < 0 || i_height >= ImageHeight)
-          continue;
 
-        for (int j_width = j - dx; j_width <= j + dx; j_width++)
-        {
-          if (j_width < 0 || j_width >= ImageWidth)
-            continue;
-          sum += ImageGetPixel(imgcopy, j_width, i_height);
-          num++;
-        }
-      }
-      ImageSetPixel(img, j, i, (int)(((sum) / num) + 0.5));
+  int ImageHeight = img->height;
+    int ImageWidth = img->width;
+
+    // Criar cópia da imagem original
+    Image imgCopy = ImageCreate(ImageWidth, ImageHeight, img->maxval);
+    for (int i = 0; i < ImageHeight * ImageWidth; i++) {
+        imgCopy->pixel[i] = img->pixel[i];//copiar os pixeis com os valores originais
     }
-  }
-  ImageDestroy(&imgcopy);
+
+    for (int i = 0; i < ImageHeight; i++) {
+        for (int j = 0; j < ImageWidth; j++) {
+            float sum = 0;
+            int num = 0;
+            //calcular a média dos pixeis vizinhos
+            for (int i_height = i - dy; i_height <= i + dy; i_height++) {
+                if (i_height < 0 || i_height >= ImageHeight)
+                    continue;
+
+                for (int j_width = j - dx; j_width <= j + dx; j_width++) {
+                    if (j_width < 0 || j_width >= ImageWidth)
+                        continue;
+
+                    sum += ImageGetPixel(imgCopy, j_width, i_height);
+                    num++;
+                }
+            }
+            //dar o valor do pixel blurred à imagem original
+            int blurredValue = (int)(((sum) / num) + 0.5);
+            ImageSetPixel(img, j, i, blurredValue);
+        }
+    }
+
+    ImageDestroy(&imgCopy);//libertar espaço
 }
 
 // for (int i = 0; i < img->height; i++) {
