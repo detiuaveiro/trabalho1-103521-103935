@@ -676,9 +676,9 @@ void ImageBlur(Image img, int dx, int dy)
     imgcopy->pixel[position] = img->pixel[position];
   }
   for (int i = 0; i < ImageHeight; i++)
-  { // percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
+  { 
     for (int j = 0; j < ImageWidth; j++)
-    { // percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
+    { // Usamos os 2 for para percorrer todos os pexeis da imagem
       sum = 0;
       num = 0;
       for (int i_height = i - dy; i_height <= i + dy; i_height++)
