@@ -645,9 +645,9 @@ int ImageLocateSubImage(Image img1, int *px, int *py, Image img2)
   assert(img2 != NULL);
 
   for (int i = 0; i <= img1->height - img2->height; i++)
-  { // percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
+  { // percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
     for (int j = 0; j <= img1->width - img2->width; j++)
-    { // percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
+    { // percorrer as linhas até largura da imagem 1 menos a largura da imagem 2
       if (ImageMatchSubImage(img1, j, i, img2))
       {
         *px = j;
@@ -678,11 +678,11 @@ void ImageBlur(Image img, int dx, int dy)
   for (int i = 0; i < ImageHeight; i++)
   { 
     for (int j = 0; j < ImageWidth; j++)
-    { // Usamos os 2 for para percorrer todos os pexeis da imagem
+    { // Usamos os 2 ciclos for para percorrer todos os pexeis da imagem
       sum = 0;
       num = 0;
-      for (int i_height = i - dy; i_height <= i + dy; i_height++)
-      {
+      for (int i_height = i - dy; i_height <= i + dy; i_height++) // usamos outros 2 ciclos for para percorrer o retangulo e fazer a media dos pixeis para 
+      {                                                           // subsituir os pexeis anteriores
         if (i_height < 0 || i_height >= ImageHeight)
           continue;
 
