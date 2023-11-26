@@ -644,9 +644,9 @@ int ImageLocateSubImage(Image img1, int *px, int *py, Image img2)
   assert(img1 != NULL);
   assert(img2 != NULL);
 
-  for (int i = 0; i < img1->height - img2->height; i++)
+  for (int i = 0; i <= img1->height - img2->height; i++)
   { // percorrer as linhas até altura da imagem 1 menos a altura da imagem 2
-    for (int j = 0; j < img1->width - img2->width; j++)
+    for (int j = 0; j <= img1->width - img2->width; j++)
     { // percorrer as colunas até altura da imagem 1 menos a altura da imagem 2
       if (ImageMatchSubImage(img1, j, i, img2))
       {
